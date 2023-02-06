@@ -17,7 +17,8 @@ links = [
 
 
 for link in links:
-    page = requests.get(f'https://www.atptour.com/en/stats/{link}/2019/hard/all/')
+    # page = requests.get(f'https://www.atptour.com/en/stats/{link}/2019/hard/all/')
+    page = requests.get(f'https://www.atptour.com/en/stats/{link}/2018/hard/all/')
     soup = BeautifulSoup(page.content, 'html.parser')
 
     tables = soup.select('#statsListingTableContent > table')[0]
@@ -38,8 +39,9 @@ for link in links:
             for idx in range(0, len(head), row_len):
                 row = head[idx+1:idx+row_len]
                 df.loc[len(df)] = row
-            
-            df.to_csv(f'./data/{link}.csv', index=False)
+
+            # df.to_csv(f'./data/{link}-2019.csv', index=False)
+            df.to_csv(f'./data/{link}-2018.csv', index=False)
 
         
 
