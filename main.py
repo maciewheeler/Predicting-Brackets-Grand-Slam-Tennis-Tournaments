@@ -55,4 +55,4 @@ for name in players:
     data = pd.concat([data, get_player_data(name, players[name], 2018)])
 
 data = data.reset_index(drop=True)
-data.to_csv('./data/atp_tour_2018.csv', index=False)
+data.to_csv('./data/aus-open-player-stats-2018.csv', index=False)
