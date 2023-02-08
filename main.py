@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 
 # link for fetching list of players
-link = 'https://www.atptour.com/en/scores/archive/us-open/560/2019/results'
+link = 'https://www.atptour.com/en/scores/archive/australian-open/580/2019/results'
 page = requests.get(link)
 soup = BeautifulSoup(page.content, 'html.parser')
 
