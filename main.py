@@ -1,4 +1,5 @@
 # import libraries
+from typing import Tuple
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
@@ -38,6 +39,19 @@ def rank_link(page_ref: str) -> str:
     return f"https://www.atptour.com{page_ref}rankings-history"
 
 
+def matches_link(player_ref: str, year: int = 2018) -> str:
+    """returns link of a player's match activity
+
+    Args:
+        player_ref (str): player name and their assigned ATP id
+        year (int, optional): year of stats required. Defaults to 2018.
+
+    Returns:
+        str: link of the player's activity for 2018 year
+    """
+    return f"https://www.atptour.com{player_ref}player-activity?year={year}&matchType=Singles"
+
+
 main_table = soup.select(
     f"#scoresResultsContent > .day-table-wrapper > .day-table > tbody:nth-of-type(7)")
 
@@ -48,7 +62,40 @@ for tag in main_table[0].find_all('a'):
     if tag.get('href') and 'overview' in tag.get('href'):
         players[tag.text] = tag.get("href")[:-8]
 
-# create function to web-scrap each player's individual stat and ranking
+# create function to web-scrap each player's individual stats, ranking, and height
+
+
+def get_player_activity(page_ref: str, year: int = 2018) -> Tuple[str, int]:
+    """finds the number of matches played and the height of given player
+
+    Args:
+        player_ref (str): player name and their assigned ATP id
+        year (int, optional): year of stats required. Defaults to 2018.
+
+    Returns:
+        Tuple[str, int]: a tuple of height and matches played by the player
+    """
+    match_page = requests.get(matches_link(page_ref, year))
+    match_soup = BeautifulSoup(match_page.content, 'html.parser')
+    match_data = match_soup.select(".table-height-cm-wrapper")
+    height = match_data[0].text[1:-1]
+    height = height.strip('cm')
+    try:
+        height = int(height)
+    except ValueError:
+        pass
+    
+
+    match_data = match_soup.select(".activity-tournament-table")
+    matches_played = 0
+    for match in match_data:
+        tourna_details = match.select('.info-area')
+        court = tourna_details[1].text.strip()
+        if court.endswith('Hard'):
+            a_tournament = match.select('.mega-table > tbody > tr')
+            matches_played += len(a_tournament)
+
+    return height, matches_played
 
 
 def get_player_data(name: str, link: str, year: int = 2018) -> DataFrame:
@@ -106,6 +153,11 @@ def get_player_data(name: str, link: str, year: int = 2018) -> DataFrame:
             print(f'player: {name}, rank: {singles_rank}')
             player_data['rank'] = singles_rank
             counter = 0
+    
+    # find the player's height and matches played
+    player_acvy = get_player_activity(link)
+    player_data['height (cm)'] = player_acvy[0]
+    player_data['matches_played'] = player_acvy[1]
 
     return pd.DataFrame.from_dict(player_data)
 
