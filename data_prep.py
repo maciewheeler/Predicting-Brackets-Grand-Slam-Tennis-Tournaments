@@ -1,6 +1,7 @@
 import pandas as pd
 
 train = pd.read_csv('data/aus-open-player-stats-2018.csv')
+test = pd.read_csv('data/aus-open-2019.csv')
 
 count = 0
 for i in train["1st_serve"]:
@@ -75,3 +76,11 @@ for i in train["total_points_won"]:
     count = count + 1
 
 train.to_csv('data/aus-open-player-stats-2018.csv')
+
+new8 = test[test["Round"] == "4th Round"]
+new16 = test[test["Round"] == "3rd Round"]
+new_test8 = new8[["Winner", "WRank"]]
+new_test16 = new16[["Winner", "WRank"]]
+
+new_test8.to_csv("data/aus-open-2019-top-8.csv")
+new_test16.to_csv("data/aus-open-2019-top-16.csv")
