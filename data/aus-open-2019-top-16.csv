@@ -1,17 +1,9 @@
-,Winner,WRank
-96,Tsitsipas S.,15
-97,Berdych T.,57
-98,Federer R.,3
-99,Tiafoe F.,39
-100,Dimitrov G.,21
-101,Bautista Agut R.,24
-102,Nadal R.,2
-103,Cilic M.,7
-104,Medvedev D.,19
-105,Nishikori K.,9
-106,Carreno Busta P.,23
-107,Raonic M.,17
-108,Djokovic N.,1
-109,Coric B.,12
-110,Zverev A.,4
-111,Pouille L.,31
+,Winner,Loser,WRank,LRank
+112,Tiafoe F.,Dimitrov G.,39,21.0
+113,Nadal R.,Berdych T.,2,57.0
+114,Bautista Agut R.,Cilic M.,24,7.0
+115,Tsitsipas S.,Federer R.,15,3.0
+116,Raonic M.,Zverev A.,17,4.0
+117,Pouille L.,Coric B.,31,12.0
+118,Nishikori K.,Carreno Busta P.,9,23.0
+119,Djokovic N.,Medvedev D.,1,19.0
