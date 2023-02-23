@@ -78,6 +78,6 @@ for i in train["total_points_won"]:
 train.to_csv('data/aus-open-player-stats-2018.csv')
 
 new16 = test[test["Round"] == "3rd Round"]
-new_test16 = new16[["Winner", "WRank"]]
+new_test16 = new16["Winner"]
 
 new_test16.to_csv("data/aus-open-2019-top-16.csv")
