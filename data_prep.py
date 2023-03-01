@@ -19,6 +19,8 @@ for col in columns_to_decimal:
         train.loc[count, col] = percent
         count = count + 1
 
+train = train[~(train == 0).any(axis=1)]
+
 derived_attributes = ["aces", "double_faults", "break_points_opportunities", "break_points_faced"]
 
 for attribute in derived_attributes:
