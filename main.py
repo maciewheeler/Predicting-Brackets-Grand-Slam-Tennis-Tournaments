@@ -13,6 +13,8 @@ link = 'https://www.atptour.com/en/scores/archive/australian-open/580/2019/resul
 page = requests.get(link)
 soup = BeautifulSoup(page.content, 'html.parser')
 
+# link for test data
+link_test = 'http://www.tennis-data.co.uk/2019/ausopen.csv'
 
 def player_link(page_ref: str, year: int = 2018) -> str:
     """Return url for the player stats
@@ -169,6 +171,9 @@ for name in players:
 
 data = data.reset_index(drop=True)
 data.to_csv(f'./data/aus-open-player-stats-{YEAR}.csv', index=False)
+
+test = pd.read_csv(link_test)
+test.to_csv('./data/aus-open-2019.csv', index = False)
 
 
 # ** - Janko Tipsarevic doesn't have a ranking because he didn't take part

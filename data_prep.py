@@ -3,81 +3,32 @@ import pandas as pd
 train = pd.read_csv('data/aus-open-player-stats-2018.csv')
 test = pd.read_csv('data/aus-open-2019.csv')
 
-count = 0
-for i in train["1st_serve"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "1st_serve"] = percent
-    count = count + 1
+columns_to_remove = ["name", "year", "service_games_played", "return_games_played", "total_service_points_won",
+                     "return_points_won", "total_points_won"]
 
-count = 0
-for i in train["1st_serve_points_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "1st_serve_points_won"] = percent
-    count = count + 1
+train = train.drop(columns=columns_to_remove)
 
-count = 0
-for i in train["2nd_serve_points_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "2nd_serve_points_won"] = percent
-    count = count + 1
+columns_to_decimal = ["1st_serve", "1st_serve_points_won", "2nd_serve_points_won", "break_points_saved",
+                     "service_games_won", "1st_serve_return_points_won", "2nd_serve_return_points_won",
+                      "break_points_converted", "return_games_won"]
 
-count = 0
-for i in train["break_points_saved"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "break_points_saved"] = percent
-    count = count + 1
+for col in columns_to_decimal:
+    count = 0
+    for i in train[col]:
+        percent = float(i.strip("%")) / 100
+        train.loc[count, col] = percent
+        count = count + 1
 
-count = 0
-for i in train["service_games_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "service_games_won"] = percent
-    count = count + 1
+derived_attributes = ["aces", "double_faults", "break_points_opportunities", "break_points_faced"]
 
-count = 0
-for i in train["total_service_points_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "total_service_points_won"] = percent
-    count = count + 1
+for attribute in derived_attributes:
+    derived_attribute = attribute + "_per_match"
+    train[derived_attribute] = train[attribute] / train["matches_played"]
+    train = train.drop(columns=attribute)
 
-count = 0
-for i in train["1st_serve_return_points_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "1st_serve_return_points_won"] = percent
-    count = count + 1
-
-count = 0
-for i in train["2nd_serve_return_points_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "2nd_serve_return_points_won"] = percent
-    count = count + 1
-
-count = 0
-for i in train["break_points_converted"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "break_points_converted"] = percent
-    count = count + 1
-
-count = 0
-for i in train["return_games_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "return_games_won"] = percent
-    count = count + 1
-
-count = 0
-for i in train["return_points_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "return_points_won"] = percent
-    count = count + 1
-
-count = 0
-for i in train["total_points_won"]:
-    percent = float(i.strip("%")) / 100
-    train.loc[count, "total_points_won"] = percent
-    count = count + 1
-
-train.to_csv('data/aus-open-player-stats-2018.csv')
+train.to_csv('data/train.csv')
 
 new16 = test[test["Round"] == "3rd Round"]
 new_test16 = new16["Winner"]
 
-new_test16.to_csv("data/aus-open-2019-top-16.csv")
+new_test16.to_csv("data/test.csv")
