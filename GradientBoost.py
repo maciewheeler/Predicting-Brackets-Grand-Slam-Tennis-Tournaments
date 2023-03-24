@@ -12,11 +12,7 @@ def main():
     y = data['rank']
     players = data2['name']
     winners = set(test['Winner'].apply(lambda x: x))
-    def label(x):
-        name = x.split(' ')
-        first_name = name[0]
-        last_name = name[1]
-        if
+
     data['winner'] = data2['name'].apply(lambda x: 1 if x.split(' ')[1] in winners else 0)
     print(data['winner'].sum())
 
