@@ -8,18 +8,17 @@ def main():
     data = pd.read_csv('data/train.csv')
     data2 = pd.read_csv('data/aus-open-player-stats-2018.csv')
     test = pd.read_csv('data/test.csv')
-    X = data.drop('rank', axis=1)
-    y = data['rank']
-    players = data2['name']
-    winners = set(test['Winner'].apply(lambda x: x))
 
-    data['winner'] = data2['name'].apply(lambda x: 1 if x.split(' ')[1] in winners else 0)
-    print(data['winner'].sum())
+    # players = data2['name']
+    # winners = set(test['Winner'].apply(lambda x: x))
+    winners = set(test['rank'])
+    data['winner'] = data2['rank'].apply(lambda x: 1 if x in winners else 0)
 
+    X = data.drop(['rank', 'winner'], axis=1)
+    y = data['winner']
+    print(X.head())
 
-    # print()
-
-    # split data into training and testing sets
+    # # split data into training and testing sets
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     #
     # # define the Gradient Boosting model with default hyperparameters
@@ -42,6 +41,6 @@ def main():
     #     if last_name in winners:
     #         count += 1
     # print(count)
-
+#
 if __name__ == '__main__':
     main()
