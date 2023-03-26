@@ -6,10 +6,10 @@ import pandas as pd
 from pandas import DataFrame
 
 # change this for a stat of different year
-YEAR = 2018
+YEAR = 2017
 
 # link for fetching list of players
-link = 'https://www.atptour.com/en/scores/archive/australian-open/580/2019/results'
+link = f'https://www.atptour.com/en/scores/archive/australian-open/580/{YEAR + 1}/results'
 page = requests.get(link)
 soup = BeautifulSoup(page.content, 'html.parser')
 
@@ -49,7 +49,7 @@ def matches_link(player_ref: str, year: int = 2018) -> str:
         year (int, optional): year of stats required. Defaults to 2018.
 
     Returns:
-        str: link of the player's activity for 2018 year
+        str: link of the player's activity for given year
     """
     return f"https://www.atptour.com{player_ref}player-activity?year={year}&matchType=Singles"
 
