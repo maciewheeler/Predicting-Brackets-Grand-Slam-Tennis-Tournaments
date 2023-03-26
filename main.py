@@ -14,14 +14,14 @@ page = requests.get(link)
 soup = BeautifulSoup(page.content, 'html.parser')
 
 # link for test data
-link_test = 'http://www.tennis-data.co.uk/2019/ausopen.csv'
+link_test = f'http://www.tennis-data.co.uk/{YEAR + 1}/ausopen.csv'
 
-def player_link(page_ref: str, year: int = 2018) -> str:
+def player_link(page_ref: str, year: int = YEAR) -> str:
     """Return url for the player stats
 
     Args:
         page_ref (str): player name and their assigned ATP id
-        year (int, optional): year of stats required. Defaults to 2018.
+        year (int, optional): year of stats required. Defaults to YEAR.
 
     Returns:
         str: url with player stats of the given ref and year
@@ -41,15 +41,15 @@ def rank_link(page_ref: str) -> str:
     return f"https://www.atptour.com{page_ref}rankings-history"
 
 
-def matches_link(player_ref: str, year: int = 2018) -> str:
+def matches_link(player_ref: str, year: int = YEAR) -> str:
     """returns link of a player's match activity
 
     Args:
         player_ref (str): player name and their assigned ATP id
-        year (int, optional): year of stats required. Defaults to 2018.
+        year (int, optional): year of stats required. Defaults to YEAR.
 
     Returns:
-        str: link of the player's activity for given year
+        str: link of the player's activity for YEAR
     """
     return f"https://www.atptour.com{player_ref}player-activity?year={year}&matchType=Singles"
 
@@ -67,12 +67,12 @@ for tag in main_table[0].find_all('a'):
 # create function to web-scrap each player's individual stats, ranking, and height
 
 
-def get_player_activity(page_ref: str, year: int = 2018) -> Tuple[str, int]:
+def get_player_activity(page_ref: str, year: int = YEAR) -> Tuple[str, int]:
     """finds the number of matches played and the height of given player
 
     Args:
         player_ref (str): player name and their assigned ATP id
-        year (int, optional): year of stats required. Defaults to 2018.
+        year (int, optional): year of stats required. Defaults to YEAR.
 
     Returns:
         Tuple[str, int]: a tuple of height and matches played by the player
@@ -100,13 +100,13 @@ def get_player_activity(page_ref: str, year: int = 2018) -> Tuple[str, int]:
     return height, matches_played
 
 
-def get_player_data(name: str, link: str, year: int = 2018) -> DataFrame:
+def get_player_data(name: str, link: str, year: int = YEAR) -> DataFrame:
     """web-scrap each player's individual stat and ranking
 
     Args:
         name (str): player's name
         link (str): player's link of statistics
-        year (int, optional): year of stats required. Defaults to 2018.
+        year (int, optional): year of stats required. Defaults to YEAR.
 
     Returns:
         DataFrame: returns dataframe of the player's stats and ranking
@@ -141,14 +141,14 @@ def get_player_data(name: str, link: str, year: int = 2018) -> DataFrame:
 
     counter = 0
     # special case**
-    if name == 'Janko Tipsarevic':
-        no_rank = float('-inf')
-        print(f'player: {name}, rank: {no_rank}')
-        player_data['rank'] = float('-inf')
+    # if name == 'Janko Tipsarevic':
+    #     no_rank = float('-inf')
+    #     print(f'player: {name}, rank: {no_rank}')
+    #     player_data['rank'] = float('-inf')
 
-    # loop through and find out the date with the earliest ranking of Jan 2019
+    # loop through and find out the date with the earliest ranking of Jan YEAR
     for date in rank_data:
-        if '2019.01.' in date.text:
+        if '2018.01.' in date.text:
             counter += 1
         if counter == 3:
             singles_rank = date.select('td')[1].text.strip('\n').strip()
@@ -173,7 +173,7 @@ data = data.reset_index(drop=True)
 data.to_csv(f'./data/aus-open-player-stats-{YEAR}.csv', index=False)
 
 test = pd.read_csv(link_test)
-test.to_csv('./data/aus-open-2019.csv', index = False)
+test.to_csv(f'./data/aus-open-{YEAR+1}.csv', index = False)
 
 
 # ** - Janko Tipsarevic doesn't have a ranking because he didn't take part
