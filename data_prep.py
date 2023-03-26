@@ -8,9 +8,6 @@ results2019 = pd.read_csv('data/aus-open-2019.csv')
 top16_2018 = list(results2018[results2018["Round"] == "3rd Round"]["WRank"])
 top16_2019 = list(results2019[results2019["Round"] == "3rd Round"]["WRank"])
 
-train['target'] = train['rank'].apply(lambda x: 1 if x in top16_2018 else 0)
-test['target'] = test['rank'].apply(lambda x: 1 if x in top16_2019 else 0)
-
 columns_to_remove = ["name", "year", "service_games_played", "return_games_played", "total_service_points_won",
                      "return_points_won", "total_points_won"]
 
@@ -36,6 +33,9 @@ for col in columns_to_decimal:
 
 train = train[~(train == 0).any(axis=1)]
 test = test[~(test == 0).any(axis=1)]
+
+train['target'] = train['rank'].apply(lambda x: 1 if x in top16_2018 else 0)
+test['target'] = test['rank'].apply(lambda x: 1 if x in top16_2019 else 0)
 
 derived_attributes = ["aces", "double_faults", "break_points_opportunities", "break_points_faced"]
 
