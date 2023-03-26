@@ -9,12 +9,12 @@ from pandas import DataFrame
 YEAR = 2017
 
 # link for fetching list of players
-link = 'https://www.atptour.com/en/scores/archive/australian-open/580/2018/results'
+link = 'https://www.atptour.com/en/scores/archive/australian-open/580/{YEAR + 1}/results'
 page = requests.get(link)
 soup = BeautifulSoup(page.content, 'html.parser')
 
 # link for test data
-link_test = 'http://www.tennis-data.co.uk/2018/ausopen.csv'
+link_test = 'http://www.tennis-data.co.uk/{YEAR + 1}/ausopen.csv'
 
 def player_link(page_ref: str, year: int = YEAR) -> str:
     """Return url for the player stats
