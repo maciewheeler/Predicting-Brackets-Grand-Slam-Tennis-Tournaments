@@ -148,7 +148,7 @@ def get_player_data(name: str, link: str, year: int = YEAR) -> DataFrame:
 
     # loop through and find out the date with the earliest ranking of Jan YEAR
     for date in rank_data:
-        if '2018.01.' in date.text:
+        if f'{year}.01.' in date.text:
             counter += 1
         if counter == 3:
             singles_rank = date.select('td')[1].text.strip('\n').strip()
