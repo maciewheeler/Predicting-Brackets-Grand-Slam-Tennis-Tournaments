@@ -37,7 +37,7 @@ pred_prob = predict(model,
 
 #Evaluate model 
 results = test %>%
-  select(target) %>%
+  select(target, rank) %>%
   bind_cols(pred_class, pred_prob)
 
 #Accuracy
