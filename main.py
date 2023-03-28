@@ -176,6 +176,7 @@ test = pd.read_csv(link_test)
 test.to_csv(f'./data/aus-open-{YEAR+1}.csv', index = False)
 
 
-# ** - Janko Tipsarevic doesn't have a ranking because he didn't take part
+## WHEN YEAR == 2018
+# Janko Tipsarevic doesn't have a ranking because he didn't take part
 # in tournaments post 2017 US Open. He got ranking on Jan 28, 2019.
 # The earliest ranking before 2019 Aus Open is Aug 27, 2018
