@@ -20,17 +20,11 @@ x_train = train.drop(columns=["target"])
 y_test = test["target"]
 x_test = test.drop(columns=["target"])
 
-# hyperparameter tuning
-param_grid = {'C' : [0.01, 0.1, 1, 10, 100], 'gamma' : [0.01, 0.1, 1, 10, 100]}
-grid = GridSearchCV(svm.SVC(), param_grid, refit=True, verbose=2)
-grid.fit(x_train, y_train)
-print(grid.best_params_)
-
 # linear kernel
 clf = svm.SVC(kernel='linear', probability=True)
 clf.fit(x_train, y_train)
 y_pred = clf.predict(x_test)
-prob = clf.predict_proba(x_test)[:,1]
+prob = clf.predict_proba(x_test)[:, 1]
 print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
 print("Precision:", metrics.precision_score(y_test, y_pred))
 print("Recall:", metrics.recall_score(y_test, y_pred))
@@ -68,3 +62,18 @@ plt.title('ROC Curve')
 plt.legend(loc='lower right')
 plt.savefig('SVM_ROC')
 plt.close()
+
+# hyperparameter tuning
+param_grid = {'C': [0.01, 0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10, 100]}
+grid = GridSearchCV(svm.SVC(), param_grid, refit=True, verbose=2)
+grid.fit(x_train, y_train)
+print(grid.best_params_)
+
+# rbf kernel
+clf = svm.SVC(C=0.01, gamma=0.01, kernel='rbf', probability=True)
+clf.fit(x_train, y_train)
+y_pred = clf.predict(x_test)
+prob = clf.predict_proba(x_test)[:, 1]
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+print("Precision:", metrics.precision_score(y_test, y_pred))
+print("Recall:", metrics.recall_score(y_test, y_pred))
