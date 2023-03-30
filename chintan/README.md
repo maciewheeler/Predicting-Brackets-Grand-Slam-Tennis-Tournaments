@@ -6,13 +6,13 @@ When training over the years `2016` to `2018` for testing on the year `2019`
 
 1. Check that these files exist in the data folder
 
-  - [x] aus-open-player-stats-2015.csv
-  - [x] aus-open-player-stats-2016.csv
-  - [x] aus-open-player-stats-2017.csv
-  - [x] m2016.csv
-  - [x] m2017.csv
-  - [x] m2018.csv
-  - [x] m2019.csv
+-   [x] aus-open-player-stats-2015.csv
+-   [x] aus-open-player-stats-2016.csv
+-   [x] aus-open-player-stats-2017.csv
+-   [x] m2016.csv
+-   [x] m2017.csv
+-   [x] m2018.csv
+-   [x] m2019.csv
 
 2. Open the notebook `neural_network.ipynb`
 
@@ -24,17 +24,20 @@ When training over the years `2016` to `2018` for testing on the year `2019`
 
 ### When adding more data,
 
-- Download match outcome data from this [website](http://www.tennis-data.co.uk/ausopen.php)
-- If adding data for the year 2015, Save it as `m2015.csv`
-- Run the main.py as
+-   Download match outcome data from this [website](http://www.tennis-data.co.uk/ausopen.php)
+-   If adding data for the year 2015, Save it as `m2015.csv`
+-   Run the main.py as
+
 ```bash
 python3 main.py --year 2014
 ```
-- Continue from `Step 2`
+
+-   Continue from `Step 2`
 
 ## Model used
 
 -   Neural Network
+-   Support Vector Machine (linear kernel)
 
 ## Assumptions
 
