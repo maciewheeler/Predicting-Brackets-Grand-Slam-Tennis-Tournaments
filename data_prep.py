@@ -31,8 +31,8 @@ for col in columns_to_decimal:
         test.loc[count2, col] = percent
         count2 = count2 + 1
 
-train = train[~(train == 0).any(axis=1)]
-test = test[~(test == 0).any(axis=1)]
+train = train[~(train['aces'] == 0)]
+test = test[~(test['aces'] == 0)]
 
 train['target'] = train['rank'].apply(lambda x: 1 if x in top16_2018 else 0)
 test['target'] = test['rank'].apply(lambda x: 1 if x in top16_2019 else 0)

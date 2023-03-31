@@ -6,7 +6,7 @@ import pandas as pd
 from pandas import DataFrame
 
 # change this for a stat of different year
-YEAR = 2017
+YEAR = 2018
 
 # link for fetching list of players
 link = f'https://www.atptour.com/en/scores/archive/australian-open/580/{YEAR + 1}/results'
@@ -173,7 +173,7 @@ data = data.reset_index(drop=True)
 data.to_csv(f'./data/aus-open-player-stats-{YEAR}.csv', index=False)
 
 test = pd.read_csv(link_test)
-test.to_csv(f'./data/aus-open-{YEAR+1}.csv', index = False)
+test.to_csv(f'./data/aus-open-{YEAR+1}.csv', index=False)
 
 
 ## WHEN YEAR == 2018

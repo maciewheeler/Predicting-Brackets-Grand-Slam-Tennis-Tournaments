@@ -102,7 +102,7 @@ features = np.array(feature_names)
 sorted_idx = per_importance.importances_mean.argsort()
 plt.barh(features[sorted_idx], per_importance.importances_mean[sorted_idx])
 plt.xlabel("Permutation Importance")
-plt.savefig("rbfSVM_feature_importance")
+plt.savefig("SVM_images/rbfSVM_feature_importance")
 plt.clf()
 
 # result dataframe
@@ -121,7 +121,7 @@ sns.heatmap(svm_cm, annot=True, fmt='.2f')
 plt.ylabel('True class')
 plt.xlabel('Predicted class')
 plt.title('SVM Classifier')
-plt.savefig('rbfSVM_Classifier')
+plt.savefig('SVM_images/rbfSVM_Classifier')
 plt.clf()
 
 # ROC curve
@@ -135,7 +135,7 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.title('ROC Curve')
 plt.legend(loc='lower right')
-plt.savefig('rbfSVM_ROC')
+plt.savefig('SVM_images/rbfSVM_ROC')
 plt.close()
 
 # hyperparameter tuning
@@ -162,7 +162,7 @@ sns.heatmap(svm_cm, annot=True, fmt='.2f')
 plt.ylabel('True class')
 plt.xlabel('Predicted class')
 plt.title('SVM Classifier')
-plt.savefig('final_rbfSVM_Classifier')
+plt.savefig('SVM_images/final_rbfSVM_Classifier')
 plt.clf()
 
 # final ROC curve
@@ -176,5 +176,5 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.title('ROC Curve')
 plt.legend(loc='lower right')
-plt.savefig('final_rbfSVM_ROC')
+plt.savefig('SVM_images/final_rbfSVM_ROC')
 plt.close()
