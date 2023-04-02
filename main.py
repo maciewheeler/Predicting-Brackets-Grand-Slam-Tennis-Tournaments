@@ -140,12 +140,6 @@ def get_player_data(name: str, link: str, year: int = YEAR) -> DataFrame:
         "#playerRankHistoryContainer > table > tbody > tr")
 
     counter = 0
-    # special case**
-    # if name == 'Janko Tipsarevic':
-    #     no_rank = float('-inf')
-    #     print(f'player: {name}, rank: {no_rank}')
-    #     player_data['rank'] = float('-inf')
-
     # loop through and find out the date with the earliest ranking of Jan YEAR
     for date in rank_data:
         if f'{year + 1}.01.' in date.text:
@@ -174,9 +168,3 @@ data.to_csv(f'./data/aus-open-player-stats-{YEAR}.csv', index=False)
 
 test = pd.read_csv(link_test)
 test.to_csv(f'./data/aus-open-{YEAR+1}.csv', index=False)
-
-
-## WHEN YEAR == 2018
-# Janko Tipsarevic doesn't have a ranking because he didn't take part
-# in tournaments post 2017 US Open. He got ranking on Jan 28, 2019.
-# The earliest ranking before 2019 Aus Open is Aug 27, 2018
