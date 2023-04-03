@@ -42,7 +42,7 @@ print("Precision:", metrics.precision_score(y_test, y_pred1))
 print("Recall:", metrics.recall_score(y_test, y_pred1))
 
 # feature importance/selection (dimensionality reduction)
-# 'A', 'D', 'E', 'F', 'I', 'J', 'N', 'O' features give greatest accuracy and keeps the most possible features
+# 'A', 'D', 'E', 'F', 'J', 'N', 'O'
 # x_train_new = x_train.copy()
 # x_test_new = x_test.copy()
 #
@@ -76,11 +76,11 @@ print("Recall:", metrics.recall_score(y_test, y_pred1))
 #             " Accuracy on test set:{:.4%}".format(accuracy1))
 
 x_train = pd.concat([x_train["1st_serve"], x_train["break_points_saved"], x_train["service_games_won"],
-                     x_train["1st_serve_return_points_won"], x_train["return_games_won"], x_train["rank"],
+                     x_train["1st_serve_return_points_won"], x_train["rank"],
                      x_train["double_faults_per_match"], x_train["break_points_opportunities_per_match"]], axis=1)
 
 x_test = pd.concat([x_test["1st_serve"], x_test["break_points_saved"], x_test["service_games_won"],
-                     x_test["1st_serve_return_points_won"], x_test["return_games_won"], x_test["rank"],
+                     x_test["1st_serve_return_points_won"],  x_test["rank"],
                      x_test["double_faults_per_match"], x_test["break_points_opportunities_per_match"]], axis=1)
 
 # SVM with dimensionality reduction
@@ -100,10 +100,8 @@ feature_names = ["1st_serve", "break_points_saved", "service_games_won", "1st_se
                  "return_games_won", "rank","double_faults_per_match","break_points_opportunities_per_match"]
 features = np.array(feature_names)
 sorted_idx = per_importance.importances_mean.argsort()
-plt.barh(features[sorted_idx], per_importance.importances_mean[sorted_idx])
-plt.xlabel("Permutation Importance")
-plt.savefig("SVM_images/rbfSVM_feature_importance")
-plt.clf()
+print(features[sorted_idx])
+print(per_importance.importances_mean[sorted_idx])
 
 # result dataframe
 df = x_test.copy()
@@ -139,14 +137,14 @@ plt.savefig('SVM_images/rbfSVM_ROC')
 plt.close()
 
 # hyperparameter tuning
-# the best parameters are C = 0.1 and gamma = 0.001
-param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [0.001, 0.01, 0.1, 1]}
-grid = GridSearchCV(svm.SVC(kernel='rbf'), param_grid, refit=True, verbose=3)
+# the best parameters are C = 100 and gamma = 0.01
+param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [0.0001, 0.001, 0.01, 0.1, 1]}
+grid = GridSearchCV(svm.SVC(kernel='rbf'), param_grid, scoring='f1', refit=True, verbose=3)
 #grid.fit(x_train, y_train)
 #print(grid.best_params_)
 
 # SVM with hyperparameters and dimensionality reduction
-model3 = svm.SVC(C=0.1, gamma=0.001, kernel='rbf', probability=True)
+model3 = svm.SVC(C=100, gamma=0.01, kernel='rbf', probability=True)
 model3.fit(x_train, y_train)
 y_pred = model3.predict(x_train)
 y_pred1 = model3.predict(x_test)
