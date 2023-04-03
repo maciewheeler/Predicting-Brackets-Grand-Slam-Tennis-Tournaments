@@ -42,7 +42,7 @@ print("Precision:", metrics.precision_score(y_test, y_pred1))
 print("Recall:", metrics.recall_score(y_test, y_pred1))
 
 # feature importance/selection (dimensionality reduction)
-# 'B', 'C', 'E', 'G', 'I', 'J', 'K', 'L', 'N', 'O', 'P' features give greatest accuracy and keeps the most possible features
+# 'A', 'B', 'F', 'J', 'K', 'L', 'N', 'O'
 # x_train_new = x_train.copy()
 # x_test_new = x_test.copy()
 #
@@ -75,17 +75,13 @@ print("Recall:", metrics.recall_score(y_test, y_pred1))
 #             print(ls, "  Accuracy on training set:{:.4%}".format(accuracy),
 #             " Accuracy on test set:{:.4%}".format(accuracy1))
 
-x_train = pd.concat([x_train["1st_serve_points_won"], x_train["2nd_serve_points_won"],
-                     x_train["service_games_won"], x_train["2nd_serve_return_points_won"], x_train["return_games_won"],
+x_train = pd.concat([x_train["1st_serve"], x_train["1st_serve_points_won"], x_train["1st_serve_return_points_won"],
                      x_train["rank"], x_train["height (cm)"], x_train["matches_played"],
-                     x_train["double_faults_per_match"], x_train["break_points_opportunities_per_match"],
-                     x_train["break_points_faced_per_match"]], axis=1)
+                     x_train["double_faults_per_match"], x_train["break_points_opportunities_per_match"]], axis=1)
 
-x_test = pd.concat([x_test["1st_serve_points_won"], x_test["2nd_serve_points_won"],
-                     x_test["service_games_won"], x_test["2nd_serve_return_points_won"], x_test["return_games_won"],
+x_test = pd.concat([x_test["1st_serve"], x_test["1st_serve_points_won"], x_test["1st_serve_return_points_won"],
                      x_test["rank"], x_test["height (cm)"], x_test["matches_played"],
-                     x_test["double_faults_per_match"], x_test["break_points_opportunities_per_match"],
-                     x_test["break_points_faced_per_match"]], axis=1)
+                     x_test["double_faults_per_match"], x_test["break_points_opportunities_per_match"]], axis=1)
 
 # SVM with dimensionality reduction
 model2 = svm.SVC(kernel='poly', probability=True)
@@ -105,10 +101,8 @@ feature_names = ["1st_serve_points_won", "2nd_serve_points_won", "service_games_
                  "break_points_opportunities_per_match", "break_points_faced_per_match"]
 features = np.array(feature_names)
 sorted_idx = per_importance.importances_mean.argsort()
-plt.barh(features[sorted_idx], per_importance.importances_mean[sorted_idx])
-plt.xlabel("Permutation Importance")
-plt.savefig("SVM_images/polySVM_feature_importance")
-plt.clf()
+print(features[sorted_idx])
+print(per_importance.importances_mean[sorted_idx])
 
 # result dataframe
 df = x_test.copy()
@@ -143,15 +137,15 @@ plt.legend(loc='lower right')
 plt.savefig('SVM_images/polySVM_ROC')
 plt.close()
 
-# # hyperparameter tuning
-# the best parameters are C = 1 and gamma = 0.1 and degree = 5
-param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [0.001, 0.01, 0.1, 1], 'degree': [0, 1, 2, 3, 4, 5, 6]}
-grid = GridSearchCV(svm.SVC(kernel='poly'), param_grid, refit=True, verbose=3)
+# hyperparameter tuning
+# the best parameters are C = 0.1 and gamma = 1 and degree = 3
+param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [0.0001, 0.001, 0.01, 0.1, 1], 'degree': [0, 1, 2, 3, 4, 5, 6]}
+grid = GridSearchCV(svm.SVC(kernel='poly'), param_grid, scoring='f1', refit=True, verbose=3)
 #grid.fit(x_train, y_train)
 #print(grid.best_params_)
 
 # SVM with hyperparameters and dimensionality reduction
-model3 = svm.SVC(C=1, gamma=0.1, degree=5, kernel='poly', probability=True)
+model3 = svm.SVC(C=0.1, gamma=1, degree=3, kernel='poly', probability=True)
 model3.fit(x_train, y_train)
 y_pred = model3.predict(x_train)
 y_pred1 = model3.predict(x_test)
