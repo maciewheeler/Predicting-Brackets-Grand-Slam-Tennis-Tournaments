@@ -12,16 +12,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # get data
-train = pd.read_csv('data/train.csv')
-test = pd.read_csv('data/test.csv')
-train = train.drop(columns=['Unnamed: 0'])
-test = test.drop(columns=['Unnamed: 0'])
+train32 = pd.read_csv('data/train32.csv')
+test32 = pd.read_csv('data/test32.csv')
+train32 = train32.drop(columns=['Unnamed: 0'])
+test32 = test32.drop(columns=['Unnamed: 0'])
 
 # split data
-y_train = train["target"]
-x_train = train.drop(columns=["target"])
-y_test = test["target"]
-x_test = test.drop(columns=["target"])
+y_train = train32["target"]
+x_train = train32.drop(columns=["target"])
+y_test = test32["target"]
+x_test = test32.drop(columns=["target"])
 
 # scale data
 sc = StandardScaler()
@@ -77,14 +77,15 @@ plt.savefig('SVM_images/rbfSVM_ROC')
 plt.close()
 
 # hyperparameter tuning
-# the best parameters are C = 10 and gamma = 0.1
+# the best parameters are C = 10 and gamma = 0.1 for 16
+# C = 100 and gamma = 0.01 for 32
 param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [0.0001, 0.001, 0.01, 0.1, 1]}
 grid = GridSearchCV(svm.SVC(kernel='rbf'), param_grid, scoring='recall', refit=True, verbose=3)
-#grid.fit(x_train, y_train)
-#print(grid.best_params_)
+grid.fit(x_train, y_train)
+print(grid.best_params_)
 
 # rbf SVM with hyperparameter tuning
-model2 = svm.SVC(C=10, gamma=0.1, kernel='rbf', probability=True)
+model2 = svm.SVC(C=100, gamma=0.01, kernel='rbf', probability=True)
 model2.fit(x_train, y_train)
 y_pred = model2.predict(x_test)
 prob = model2.predict_proba(x_test)
