@@ -1,13 +1,11 @@
 from sklearn.inspection import permutation_importance
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
-from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve
 
-import itertools
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,73 +29,15 @@ sc.fit(x_train)
 x_train = pd.DataFrame(sc.transform(x_train), index=x_train.index, columns=x_train.columns)
 x_test = pd.DataFrame(sc.transform(x_test), index=x_test.index, columns=x_test.columns)
 
-# 1st round rbf SVM
-model1 = svm.SVC(kernel='rbf')
+# rbf SVM
+model1 = svm.SVC(kernel='rbf', probability=True)
 model1.fit(x_train, y_train)
-y_pred = model1.predict(x_train)
-y_pred1 = model1.predict(x_test)
-print("Train accuracy:", metrics.accuracy_score(y_train, y_pred))
-print("Test accuracy:", metrics.accuracy_score(y_test, y_pred1))
-print("Precision:", metrics.precision_score(y_test, y_pred1))
-print("Recall:", metrics.recall_score(y_test, y_pred1))
-
-# feature importance/selection (dimensionality reduction)
-# 'A', 'D', 'E', 'F', 'J', 'N', 'O'
-# x_train_new = x_train.copy()
-# x_test_new = x_test.copy()
-#
-# x_train_new.rename(columns={'1st_serve':"A", '1st_serve_points_won':"B", '2nd_serve_points_won': "C",
-#                             'break_points_saved': "D", 'service_games_won': "E", '1st_serve_return_points_won': "F",
-#                             '2nd_serve_return_points_won': "G", 'break_points_converted': "H", 'return_games_won': "I",
-#                             'rank': "J", 'height (cm)': "K", 'matches_played': "L", 'aces_per_match': "M",
-#                             'double_faults_per_match': "N", 'break_points_opportunities_per_match': "O",
-#                             'break_points_faced_per_match': "P"}, inplace=True)
-#
-# x_test_new.rename(columns={'1st_serve':"A", '1st_serve_points_won':"B", '2nd_serve_points_won': "C",
-#                             'break_points_saved': "D", 'service_games_won': "E", '1st_serve_return_points_won': "F",
-#                             '2nd_serve_return_points_won': "G", 'break_points_converted': "H", 'return_games_won': "I",
-#                             'rank': "J", 'height (cm)': "K", 'matches_played': "L", 'aces_per_match': "M",
-#                             'double_faults_per_match': "N", 'break_points_opportunities_per_match': "O",
-#                             'break_points_faced_per_match': "P"}, inplace=True)
-#
-# for i in range(1, 17):
-#     c = itertools.combinations("ABCDEFGHIJKLMNOP", i)
-#     for item in c:
-#         ls = list(item)
-#         model = svm.SVC(kernel='rbf')
-#         model.fit(x_train_new[ls], y_train)
-#         y_pred = model.predict(x_train_new[ls])
-#         y_pred1 = model.predict(x_test_new[ls])
-#         accuracy = metrics.accuracy_score(y_train, y_pred)
-#         accuracy1 = metrics.accuracy_score(y_test, y_pred1)
-#
-#         if accuracy1 > 0.89:
-#             print(ls, "  Accuracy on training set:{:.4%}".format(accuracy),
-#             " Accuracy on test set:{:.4%}".format(accuracy1))
-
-x_train = pd.concat([x_train["1st_serve"], x_train["break_points_saved"], x_train["service_games_won"],
-                     x_train["1st_serve_return_points_won"], x_train["rank"],
-                     x_train["double_faults_per_match"], x_train["break_points_opportunities_per_match"]], axis=1)
-
-x_test = pd.concat([x_test["1st_serve"], x_test["break_points_saved"], x_test["service_games_won"],
-                     x_test["1st_serve_return_points_won"],  x_test["rank"],
-                     x_test["double_faults_per_match"], x_test["break_points_opportunities_per_match"]], axis=1)
-
-# SVM with dimensionality reduction
-model2 = svm.SVC(kernel='rbf', probability=True)
-model2.fit(x_train, y_train)
-y_pred = model2.predict(x_train)
-y_pred1 = model2.predict(x_test)
-prob = model2.predict_proba(x_test)
-print("Train accuracy:", metrics.accuracy_score(y_train, y_pred))
-print("Test accuracy:", metrics.accuracy_score(y_test, y_pred1))
-print("Precision:", metrics.precision_score(y_test, y_pred1))
-print("Recall:", metrics.recall_score(y_test, y_pred1))
+y_pred = model1.predict(x_test)
+prob = model1.predict_proba(x_test)
 
 # feature importance
-per_importance = permutation_importance(model2, x_test, y_test)
-feature_names = ["1st_serve", "break_points_saved", "service_games_won", "1st_serve_return_points_won",
-                 "return_games_won", "rank","double_faults_per_match","break_points_opportunities_per_match"]
+per_importance = permutation_importance(model1, x_test, y_test)
+feature_names = x_train.columns
 features = np.array(feature_names)
 sorted_idx = per_importance.importances_mean.argsort()
 print(features[sorted_idx])
@@ -106,7 +46,7 @@ print(per_importance.importances_mean[sorted_idx])
 # result dataframe
 df = x_test.copy()
 df['true'] = y_test
-df['predicted'] = y_pred1
+df['predicted'] = y_pred
 df['probability0'] = prob[:, 0]
 df['probability1'] = prob[:, 1]
 df1 = pd.concat([df["rank"], df["true"], df["predicted"], df["probability0"], df["probability1"]], axis=1)
@@ -114,7 +54,7 @@ final_df = df1.sort_values(by=['probability1'], ascending=False)
 print(final_df.head(16))
 
 # confusion matrix
-svm_cm = confusion_matrix(y_pred1, y_test, labels=model2.classes_)
+svm_cm = confusion_matrix(y_pred, y_test, labels=model1.classes_)
 sns.heatmap(svm_cm, annot=True, fmt='.2f')
 plt.ylabel('True class')
 plt.xlabel('Predicted class')
@@ -123,7 +63,7 @@ plt.savefig('SVM_images/rbfSVM_Classifier')
 plt.clf()
 
 # ROC curve
-svc_roc_auc = roc_auc_score(y_test, y_pred1)
+svc_roc_auc = roc_auc_score(y_test, y_pred)
 fpr, tpr, thresholds = roc_curve(y_test, prob[:, 1])
 plt.plot(fpr, tpr, label='SVC (area = %0.2f)' % svc_roc_auc)
 plt.plot([0, 1], [0, 1])
@@ -137,25 +77,38 @@ plt.savefig('SVM_images/rbfSVM_ROC')
 plt.close()
 
 # hyperparameter tuning
-# the best parameters are C = 100 and gamma = 0.01
+# the best parameters are C = 10 and gamma = 0.1
 param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [0.0001, 0.001, 0.01, 0.1, 1]}
-grid = GridSearchCV(svm.SVC(kernel='rbf'), param_grid, scoring='f1', refit=True, verbose=3)
+grid = GridSearchCV(svm.SVC(kernel='rbf'), param_grid, scoring='recall', refit=True, verbose=3)
 #grid.fit(x_train, y_train)
 #print(grid.best_params_)
 
-# SVM with hyperparameters and dimensionality reduction
-model3 = svm.SVC(C=100, gamma=0.01, kernel='rbf', probability=True)
-model3.fit(x_train, y_train)
-y_pred = model3.predict(x_train)
-y_pred1 = model3.predict(x_test)
-prob = model3.predict_proba(x_test)
-print("Accuracy:", metrics.accuracy_score(y_train, y_pred))
-print("Accuracy:", metrics.accuracy_score(y_test, y_pred1))
-print("Precision:", metrics.precision_score(y_test, y_pred1))
-print("Recall:", metrics.recall_score(y_test, y_pred1))
+# rbf SVM with hyperparameter tuning
+model2 = svm.SVC(C=10, gamma=0.1, kernel='rbf', probability=True)
+model2.fit(x_train, y_train)
+y_pred = model2.predict(x_test)
+prob = model2.predict_proba(x_test)
+
+# feature importance
+per_importance = permutation_importance(model2, x_test, y_test)
+feature_names = x_train.columns
+features = np.array(feature_names)
+sorted_idx = per_importance.importances_mean.argsort()
+print(features[sorted_idx])
+print(per_importance.importances_mean[sorted_idx])
+
+# result dataframe
+df = x_test.copy()
+df['true'] = y_test
+df['predicted'] = y_pred
+df['probability0'] = prob[:, 0]
+df['probability1'] = prob[:, 1]
+df1 = pd.concat([df["rank"], df["true"], df["predicted"], df["probability0"], df["probability1"]], axis=1)
+final_df = df1.sort_values(by=['probability1'], ascending=False)
+print(final_df.head(16))
 
 # final confusion matrix
-svm_cm = confusion_matrix(y_pred1, y_test, labels=model3.classes_)
+svm_cm = confusion_matrix(y_pred, y_test, labels=model2.classes_)
 sns.heatmap(svm_cm, annot=True, fmt='.2f')
 plt.ylabel('True class')
 plt.xlabel('Predicted class')
@@ -164,7 +117,7 @@ plt.savefig('SVM_images/final_rbfSVM_Classifier')
 plt.clf()
 
 # final ROC curve
-svc_roc_auc = roc_auc_score(y_test, y_pred1)
+svc_roc_auc = roc_auc_score(y_test, y_pred)
 fpr, tpr, thresholds = roc_curve(y_test, prob[:, 1])
 plt.plot(fpr, tpr, label='SVC (area = %0.2f)' % svc_roc_auc)
 plt.plot([0, 1], [0, 1])
