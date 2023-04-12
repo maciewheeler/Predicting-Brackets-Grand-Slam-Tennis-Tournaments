@@ -12,6 +12,11 @@ top32_2018 = list(results2018[results2018["Round"] == "2nd Round"]["WRank"])
 top16_2019 = list(results2019[results2019["Round"] == "3rd Round"]["WRank"])
 top32_2019 = list(results2019[results2019["Round"] == "2nd Round"]["WRank"])
 
+train16['target'] = train16['rank'].apply(lambda x: 1 if x in top16_2018 else 0)
+train32['target'] = train32['rank'].apply(lambda x: 1 if x in top32_2018 else 0)
+test16['target'] = test16['rank'].apply(lambda x: 1 if x in top16_2019 else 0)
+test32['target'] = test32['rank'].apply(lambda x: 1 if x in top32_2019 else 0)
+
 columns_to_remove = ["name", "year", "service_games_played", "return_games_played", "total_service_points_won",
                      "return_points_won", "total_points_won"]
 
@@ -51,11 +56,6 @@ train16 = train16[~(train16['aces'] == 0)]
 train32 = train32[~(train32['aces'] == 0)]
 test16 = test16[~(test16['aces'] == 0)]
 test32 = test32[~(test32['aces'] == 0)]
-
-train16['target'] = train16['rank'].apply(lambda x: 1 if x in top16_2018 else 0)
-train32['target'] = train32['rank'].apply(lambda x: 1 if x in top32_2018 else 0)
-test16['target'] = test16['rank'].apply(lambda x: 1 if x in top16_2019 else 0)
-test32['target'] = test32['rank'].apply(lambda x: 1 if x in top32_2019 else 0)
 
 derived_attributes = ["aces", "double_faults", "break_points_opportunities", "break_points_faced"]
 
