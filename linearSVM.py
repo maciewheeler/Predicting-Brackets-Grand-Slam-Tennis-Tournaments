@@ -1,12 +1,9 @@
-import itertools
-
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve
-from sklearn.metrics import recall_score
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -29,49 +26,6 @@ sc = StandardScaler()
 sc.fit(x_train)
 x_train = pd.DataFrame(sc.transform(x_train), index=x_train.index, columns=x_train.columns)
 x_test = pd.DataFrame(sc.transform(x_test), index=x_test.index, columns=x_test.columns)
-
-# feature importance/selection (dimensionality reduction)
-# ['A', 'B', 'E', 'F', 'G', 'H', 'I', 'K', 'M', 'N', 'O', 'P']
-x_train_new = x_train.copy()
-x_test_new = x_test.copy()
-
-x_train_new.rename(columns={'1st_serve':"A", '1st_serve_points_won':"B", '2nd_serve_points_won': "C",
-                            'break_points_saved': "D", 'service_games_won': "E", '1st_serve_return_points_won': "F",
-                            '2nd_serve_return_points_won': "G", 'break_points_converted': "H", 'return_games_won': "I",
-                            'rank': "J", 'height (cm)': "K", 'matches_played': "L", 'aces_per_match': "M",
-                            'double_faults_per_match': "N", 'break_points_opportunities_per_match': "O",
-                            'break_points_faced_per_match': "P"}, inplace=True)
-
-x_test_new.rename(columns={'1st_serve':"A", '1st_serve_points_won':"B", '2nd_serve_points_won': "C",
-                            'break_points_saved': "D", 'service_games_won': "E", '1st_serve_return_points_won': "F",
-                            '2nd_serve_return_points_won': "G", 'break_points_converted': "H", 'return_games_won': "I",
-                            'rank': "J", 'height (cm)': "K", 'matches_played': "L", 'aces_per_match': "M",
-                            'double_faults_per_match': "N", 'break_points_opportunities_per_match': "O",
-                            'break_points_faced_per_match': "P"}, inplace=True)
-
-for i in range(1, 17):
-    c = itertools.combinations("ABCDEFGHIJKLMNOP", i)
-    for item in c:
-        ls = list(item)
-        model = svm.SVC(kernel='linear')
-        model.fit(x_train_new[ls], y_train)
-        y_pred = model.predict(x_test_new[ls])
-        accuracy = recall_score(y_train, y_pred)
-
-        if accuracy > 0.9:
-            print(ls, "  Accuracy on test set:{:.4%}".format(accuracy))
-
-# x_train = pd.concat([x_train["1st_serve"], x_train["1st_serve_points_won"], x_train["service_games_won"],
-#                      x_train["1st_serve_return_points_won"], x_train["2nd_serve_return_points_won"],
-#                      x_train["break_points_converted"], x_train["return_games_won"], x_train["height (cm)"],
-#                      x_train["aces_per_match"], x_train["double_faults_per_match"],
-#                      x_train["break_points_opportunities_per_match"], x_train["break_points_faced_per_match"]], axis=1)
-#
-# x_test = pd.concat([x_test["1st_serve"], x_test["1st_serve_points_won"], x_test["service_games_won"],
-#                      x_test["1st_serve_return_points_won"], x_test["2nd_serve_return_points_won"],
-#                      x_test["break_points_converted"], x_test["return_games_won"], x_test["height (cm)"],
-#                      x_test["aces_per_match"], x_test["double_faults_per_match"],
-#                      x_test["break_points_opportunities_per_match"], x_test["break_points_faced_per_match"]], axis=1)
 
 # linear SVM
 model1 = svm.SVC(kernel='linear', probability=True)

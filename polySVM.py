@@ -1,7 +1,6 @@
 from sklearn import svm
 from sklearn.inspection import permutation_importance
 from sklearn.model_selection import GridSearchCV
-from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
