@@ -14,13 +14,13 @@ When training over the years `2016` to `2018` for testing on the year `2019`
 -   [x] m2018.csv
 -   [x] m2019.csv
 
-2. Open the notebook `neural_network.ipynb`
+2. Open the notebook `neural_network.ipynb` / `svm.ipynb` / `gradient_boost.ipynb`
 
-3. Check that the years are correctly mentioned.
+3. Check that the `Inputs` heading contains the right parameters.
 
 4. Run the notebook until a preview of the variable `r_16_merge` is displayed.
 
-5. Compare it to the tournament result
+5. Compare it to the tournament result.
 
 ### When adding more data,
 
@@ -30,6 +30,7 @@ When training over the years `2016` to `2018` for testing on the year `2019`
 
 ```bash
 python3 main.py --year 2014
+python3 all_pressure.py --year 2014
 ```
 
 -   Continue from `Step 2`
@@ -37,8 +38,34 @@ python3 main.py --year 2014
 ## Model used
 
 -   Neural Network
+    -   Hyperparameters
+        -   activation=`logistic`
+        -   solver=`adam`
+        -   learning_rate=`adaptive`
+        -   max_iter=`10000`
+        -   warm_start=`True`
+        -   hidden_layer_sizes=`(128,50,2)`
 -   Support Vector Machine (linear kernel)
+    -   Hyperparameters
+        -   kernel=`linear`
+        -   C=`0.001`
+        -   max_iter=`1000000`
+-   Gradient Boost
+    -   Hyperparameters
+        -   n_estimators=`10000`
+        -   learning_rate=`0.00001`
+        -   criterion=`squared_error`
+        -   loss=`exponential`
 
 ## Assumptions
 
 -   People with no stats have been considered as walkovers
+
+## Summary
+
+| Model          | Round of 16 | Round of 32 | Round of 64 |
+| -------------- | ----------- | ----------- | ----------- |
+| _Baseline_     | _8_         | _22_        | _43_        |
+| Neural Network | **10**      | **23**      | 50          |
+| SVM (Linear)   | 9           | **23**      | 50          |
+| Gradient Boost | **10**      | 22          | **54**      |
