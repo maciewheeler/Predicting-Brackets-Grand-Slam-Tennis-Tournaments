@@ -63,9 +63,20 @@ python3 all_pressure.py --year 2014
 
 ## Summary
 
+### Australian Open 2019
+
 | Model          | Round of 16 | Round of 32 | Round of 64 |
 | -------------- | ----------- | ----------- | ----------- |
 | _Baseline_     | _8_         | _22_        | _43_        |
 | Neural Network | **10**      | **23**      | 50          |
 | SVM (Linear)   | 9           | **23**      | 50          |
 | Gradient Boost | **10**      | 22          | **54**      |
+
+### Australian Open 2018
+
+| Model          | Round of 16 | Round of 32 | Round of 64 |
+| -------------- | ----------- | ----------- | ----------- |
+| _Baseline_     | _11_        | _20_        | _34_        |
+| Neural Network | 6           | 17          | 40          |
+| SVM (Linear)   | 5           | 20          | **46**      |
+| Gradient Boost | 8           | **22**      | **46**      |
